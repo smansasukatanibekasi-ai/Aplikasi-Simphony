@@ -29,7 +29,7 @@ st.markdown("""
     /* Warna font pada tombol kirim agar cerah dan kontras */
     .stButton>button {
         background-color: #01579b;
-        color: white !important;
+        color: blue !important;
         font-weight: bold;
         border-radius: 10px;
         border: none;
@@ -38,7 +38,7 @@ st.markdown("""
     
     .stButton>button:hover {
         background-color: #0288d1;
-        color: white !important;
+        color: blue !important;
     }
     </style>
     """, unsafe_allow_html=True)
