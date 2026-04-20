@@ -23,14 +23,15 @@ st.markdown("""
 
     /* Gaya sidebar */
     [data-testid="stSidebar"] {
-        background-color: rgba(255, 255, 255, 0.8);
+        background-color: #1a1c24; /* Warna abu-abu sangat gelap */
+        color: white; /* Agar tulisan di sidebar jadi putih */
     }
 
     /* Warna font pada tombol kirim agar cerah dan kontras */
     .stButton>button {
         background-color: #01579b;
         color: blue !important;
-        font-weight: bold;
+        font-white: bold;
         border-radius: 10px;
         border: none;
         padding: 0.5rem 1rem;
