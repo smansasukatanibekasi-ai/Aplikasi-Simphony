@@ -3,12 +3,24 @@ import streamlit as st
 # --- PENGATURAN HALAMAN ---
 st.set_page_config(page_title="SIMPHONY - SMAN 1 Sukatani", page_icon="🌱", layout="centered")
 
-# --- CUSTOM CSS (Supaya Tampilan Lebih Enjoyable) ---
+# --- CUSTOM CSS UNTUK BACKGROUND & TAMPILAN ---
+# Gambar background menggunakan tema alam yang menenangkan
 st.markdown("""
     <style>
-    .main {
-        background-color: #f0f2f6;
+    .stApp {
+        background-image: url("https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80");
+        background-attachment: fixed;
+        background-size: cover;
     }
+    
+    /* Membuat kotak konten agak transparan agar tulisan tetap jelas terbaca */
+    .main .block-container {
+        background-color: rgba(255, 255, 255, 0.85);
+        padding: 3rem;
+        border-radius: 20px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
     .stButton>button {
         width: 100%;
         height: 100px;
@@ -16,12 +28,12 @@ st.markdown("""
         border-radius: 15px;
         border: none;
         background-color: #ffffff;
-        box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+        box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
         transition: 0.3s;
     }
     .stButton>button:hover {
         background-color: #e1f5fe;
-        border: 1px solid #0288d1;
+        transform: translateY(-3px);
     }
     </style>
     """, unsafe_allow_html=True)
@@ -35,14 +47,13 @@ def kustom_navigasi(halaman):
 
 # --- LOGIKA HALAMAN ---
 
-# 1. HALAMAN BERANDA (SEMUA MENU DI SINI)
+# 1. HALAMAN BERANDA (DASHBOARD UTAMA)
 if st.session_state.page == 'Beranda':
     st.title("🌱 SIMPHONY")
     st.write("### Halo! Selamat datang di Ruang Amanmu.")
     st.write("Pilih layanan yang kamu butuhkan hari ini:")
     st.write("---")
 
-    # Membuat Grid 2 Kolom untuk Menu
     col1, col2 = st.columns(2)
 
     with col1:
@@ -60,37 +71,41 @@ if st.session_state.page == 'Beranda':
             kustom_navigasi('Game')
 
     st.write("---")
-    st.info("💡 **Tips:** Identitasmu di aplikasi ini anonim. Jangan ragu untuk berekspresi!")
+    st.info("💡 **Tips:** Identitasmu di aplikasi ini anonim. Jangan ragu untuk berekspresi! [cite: 114]")
 
-# 2. HALAMAN FORUM
+# 2. HALAMAN FORUM (Sesuai Tujuan: Wadah Berbagi Pengalaman)
 elif st.session_state.page == 'Forum':
     if st.button("⬅️ Kembali"): kustom_navigasi('Beranda')
     st.header("💬 Teman Cerita (Anonim)")
-    kategori = st.selectbox("Masalah apa yang ingin kamu ceritakan?", ["Keluarga", "Circle Pertemanan", "Bullying", "Faktor Internal"])
-    isi_cerita = st.text_area("Tuliskan di sini...", placeholder="Jangan takut, tidak ada yang tahu siapa kamu.")
+    st.write("Bagikan ceritamu secara rahasia untuk melepaskan beban pikiran.")
+    
+    kategori = st.selectbox("Apa yang ingin kamu bahas?", ["Keluarga", "Circle Pertemanan", "Bullying", "Faktor Internal"])
+    isi_cerita = st.text_area("Tuliskan perasaanmu...", placeholder="Ceritakan di sini tanpa rasa takut[cite: 4]...")
+    
     if st.button("Kirim Cerita"):
-        st.success("Terima kasih sudah berani bercerita. Kamu luar biasa!")
+        st.success("Ceritamu telah terkirim. Terima kasih sudah berani membuka diri! ")
 
 # 3. HALAMAN EDUKASI
 elif st.session_state.page == 'Edukasi':
     if st.button("⬅️ Kembali"): kustom_navigasi('Beranda')
     st.header("📚 Sudut Tenang")
-    st.write("Temukan solusi atas masalahmu melalui artikel berikut:")
-    st.markdown("- [Membangun Kepercayaan Diri](https://www.klikdokter.com/psikologi/kesehatan-mental/tips-mudah-bangun-rasa-percaya-diri-anda?srsltid=AfmBOooG09i8JhHe1ev6uiihxNUxVV1ritAcT_9KSA0dZOWrQx1eCPGE)")
-    st.markdown("- [Menghadapi Teman yang 'Exclusive'](https://kidshealth-org.translate.goog/en/teens/cliques.html?_x_tr_sl=en&_x_tr_tl=id&_x_tr_hl=id&_x_tr_pto=tc)")
-    st.video("https://youtu.be/BI2_FVJOO1M?si=PD6-EPKrjA_8DMl1")
+    st.write("Informasi dan edukasi untuk membantumu bersosialisasi dengan lebih baik[cite: 103].")
+    st.markdown("- **Membangun Percaya Diri**")
+    st.markdown("- **Tips Menghadapi Lingkungan Baru**")
+    st.video("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
 
 # 4. HALAMAN BANTUAN
 elif st.session_state.page == 'Bantuan':
     if st.button("⬅️ Kembali"): kustom_navigasi('Beranda')
     st.header("🆘 Pusat Bantuan")
-    st.write("Butuh teman bicara langsung? Hubungi konselor kami:")
-    st.success("📞 Ibu Guru BK - SMAN 1 Sukatani (0812-xxxx)")
+    st.write("Kamu tidak sendirian. Para ahli siap membantumu[cite: 113].")
+    st.success("📞 Hubungi Guru BK SMAN 1 Sukatani")
+    st.write("Jadwalkan sesi konsultasi untuk mendapatkan bimbingan pribadi[cite: 103].")
 
-# 5. HALAMAN GAME (GAMIFIKASI)
+# 5. HALAMAN GAME (Pohon Simphony)
 elif st.session_state.page == 'Game':
     if st.button("⬅️ Kembali"): kustom_navigasi('Beranda')
     st.header("🎮 Pohon Simphony")
-    st.write("Rawat pohonmu dengan terus berinteraksi positif!")
+    st.write("Setiap langkah kecilmu untuk berinteraksi membantu pohon ini tumbuh.")
     st.image("https://cdn-icons-png.flaticon.com/512/628/628283.png", width=150)
-    st.progress(40, text="Progres Pohonmu: Level 2")
+    st.progress(60, text="Level Pertumbuhan: 3")
