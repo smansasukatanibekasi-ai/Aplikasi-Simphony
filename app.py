@@ -36,14 +36,14 @@ elif choice == "📚 Sudut Tenang":
     st.write("- **Tips Menghadapi Circle Exclusive**")
     st.write("- **Cara Berkomunikasi dengan Orang Tua**")
     st.write("- **Membangun Percaya Diri Setelah Bullying**")
-    st.video("https://www.youtube.com/watch?v=dQw4w9WgXcQ") # Contoh link video
+    st.video("https://www.youtube.com/watch?v=BI2_FVJOO1M&pp=ygUjY2FyYSBtZW5qYWdhIGtlc2VoYXRhbiBtZW50YWwgc2lzd2E%3D") # Contoh link video
 
 # --- HALAMAN BANTUAN ---
 elif choice == "🆘 Pusat Bantuan":
     st.write("### 📞 Kontak Konselor Profesional")
     st.write("Jika kamu butuh penanganan lebih lanjut, hubungi guru BK atau konselor kami:")
     st.table({
-        "Nama": ["Ibu Guru A", "Bapak Guru B"],
+        "Nama": ["Ibu Riastuty Nuswo Utami, S.Pd., M.Pd", "Bapak Asep Nugraha, S.Pd, Apriani Anggraini Harhap, S.Pd"],
         "Spesialisasi": ["Masalah Keluarga", "Bullying & Trauma"],
-        "WA": ["0812xxxx", "0813xxxx"]
+        "WA": ["0812xxxx", "0813xxxx", "0851xxxx"]
     })
