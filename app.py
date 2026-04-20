@@ -64,7 +64,7 @@ if choice == "🏠 Beranda":
 # 2. HALAMAN FORUM ANONIM
 elif choice == "💬 Teman Cerita (Anonim)":
     st.write("### 📢 Ceritakan Keluh Kesahmu")
-    st.write("Identitasmu tetap rahasia. Jangan ragu untuk berbagi pengalamanmu[cite: 114].")
+    st.write("Identitasmu tetap rahasia. Jangan ragu untuk berbagi pengalamanmu.")
     
     kategori = st.selectbox("Kategori Masalah", ["Keluarga", "Circle Pertemanan", "Bullying", "Faktor Internal"])
     pesan = st.text_area("Apa yang sedang kamu rasakan?", placeholder="Tuliskan di sini...")
@@ -78,18 +78,16 @@ elif choice == "💬 Teman Cerita (Anonim)":
 # 3. HALAMAN EDUKASI
 elif choice == "📚 Sudut Tenang":
     st.write("### 📖 Artikel Motivasi & Tips")
-    st.write("Edukasi untuk membantumu membangun hubungan sosial yang lebih baik[cite: 103, 111].")
-    st.write("- **Membangun Kepercayaan Diri**")
+    st.write("Edukasi untuk membantumu membangun hubungan sosial yang lebih baik.")
     st.markdown("- [Membangun Kepercayaan Diri](https://www-helpguide-org.translate.goog/mental-health/wellbeing/how-to-build-confidence?_x_tr_sl=en&_x_tr_tl=id&_x_tr_hl=id&_x_tr_pto=tc&_x_tr_hist=true)")
-    st.write("- **Cara Berkomunikasi dengan Orang Tua**")
     st.markdown("- [Cara Berkomunikasi dengan Orang Tua'](https://rri.co.id/entikong/berita-lain/798309/tips-berkomunikasi-dengan-orangtua)")
-    st.write("- **Cara Menguatkan Jiwa ketika Ada Persoalan dalam Hidup**")
+    st.write("### 📖 Video Motivasi")
     st.video("https://youtu.be/BI2_FVJOO1M?si=5j7lHJOL99HaxrpX")
 
 # 4. HALAMAN BANTUAN
 elif choice == "🆘 Pusat Bantuan":
     st.write("### 📞 Kontak Konselor Profesional")
-    st.write("Jika kamu butuh penanganan lebih lanjut, hubungi guru BK atau konselor kami[cite: 113]:")
+    st.write("Jika kamu butuh penanganan lebih lanjut, hubungi guru BK atau konselor kami:")
     st.table({
         "Nama": ["Ibu Riastuty Nuswo Utami, S.Pd., M.Pd.", "Konselor Pendamping"],
         "Spesialisasi": ["Masalah Keluarga & Bullying", "Pengembangan Diri"],
