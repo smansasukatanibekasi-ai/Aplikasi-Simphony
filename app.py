@@ -8,7 +8,7 @@ st.markdown("""
     <style>
     /* Background untuk seluruh aplikasi */
     .stApp {
-        background-image: url("https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80");
+        background-image: url("https://www.pexels.com/video/scenic-aerial-view-of-swiss-alpine-landscape-35108054/");
         background-attachment: fixed;
         background-size: cover;
     }
