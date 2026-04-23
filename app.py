@@ -3,76 +3,47 @@ import requests
 from datetime import datetime
 import pandas as pd
 
-# --- PENGATURAN UI ---
-st.set_page_config(page_title="SIMPHONY", page_icon="🌱", layout="centered")
+# --- 1. PENGATURAN HALAMAN & BACKGROUND ---
+st.set_page_config(page_title="SIMPHONY - SMAN 1 Sukatani", page_icon="🌱", layout="centered")
 
 st.markdown("""
     <style>
-    /* 1. Background Utama */
+    /* Background Utama */
     .stApp {
         background-image: url("https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?q=80&w=1920&auto=format&fit=crop");
         background-attachment: fixed;
         background-size: cover;
     }
 
-    /* 2. Wadah Utama (Membuat Tulisan Terbaca Jelas) */
+    /* Wadah Konten (Glassmorphism agar tulisan terbaca) */
     .main .block-container {
-        background-color: rgba(255, 255, 255, 0.85); /* Putih dengan transparansi 85% */
+        background-color: rgba(255, 255, 255, 0.9); 
         padding: 3rem;
-        border-radius: 25px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        margin-top: 30px;
-        margin-bottom: 30px;
-        color: #2c3e50; /* Warna teks gelap agar kontras */
+        border-radius: 20px;
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+        margin-top: 50px;
     }
 
-    /* 3. Percantik Judul */
-    h1, h2, h3 {
-        color: #1a5276 !important;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    /* Memperjelas teks */
+    h1, h2, h3, p, span, label {
+        color: #2c3e50 !important;
     }
 
-    /* 4. Percantik Tombol */
+    /* Tombol Cantik */
     .stButton>button {
-        background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
+        background: linear-gradient(45deg, #2ecc71, #27ae60);
         color: white !important;
         border: none;
-        padding: 10px 24px;
-        border-radius: 12px;
+        border-radius: 10px;
+        padding: 0.5rem 1rem;
         font-weight: bold;
-        transition: 0.3s;
-    }
-    .stButton>button:hover {
-        transform: scale(1.02);
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     }
     </style>
     """, unsafe_allow_html=True)
 
-# --- LOGIKA HALAMAN BERANDA ---
-if choice == "🏠 Beranda":
-    st.markdown("<h1 style='text-align: center;'>🌱 SIMPHONY</h1>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; font-style: italic;'>Your Safe Space to Grow and Glow</p>", unsafe_allow_html=True)
-    st.write("---")
-    
-    # Gunakan Ilustrasi yang lebih menenangkan
-    col1, col2, col3 = st.columns([1, 2, 1])
-    with col2:
-        st.image("https://img.freepik.com/free-vector/listening-concept-illustration_114360-5942.jpg", 
-                 caption="Kami di sini untuk mendengarkanmu tanpa menghakimi.")
-    
-    st.write("""
-    ### Kenapa SIMPHONY ada untukmu?
-    Terkadang, beban di sekolah, rumah, atau lingkaran pertemanan terasa berat. **SIMPHONY** hadir sebagai teman setiamu di SMAN 1 Sukatani untuk:
-    * **Menampung ceritamu secara anonim.**
-    * **Memberikan ruang tenang saat pikiran sedang kacau.**
-    * **Menghubungkanmu dengan bantuan profesional jika dibutuhkan.**
-    """)
-    st.info("Klik menu di samping kiri untuk mulai bercerita.")
-
-# --- 2. FUNGSI KIRIM DATA (VIA PIPEDREAM) ---
+# --- 2. FUNGSI KIRIM DATA (PIPEDREAM) ---
 def kirim_ke_jembatan(kategori, pesan):
-    # Masukkan URL dari Pipedream Anda di sini
+    # GANTI URL DI BAWAH INI DENGAN URL PIPEDREAM ANDA
     url_pipedream = "https://eo5q5f9bo6e6ll1.m.pipedream.net" 
     
     data = {
@@ -80,52 +51,66 @@ def kirim_ke_jembatan(kategori, pesan):
         "kategori": kategori,
         "pesan": pesan
     }
-    
     try:
         response = requests.post(url_pipedream, json=data)
         return response.status_code == 200
     except:
         return False
 
-# --- 3. NAVIGASI SIDEBAR ---
+# --- 3. SIDEBAR (NAVIGASI) ---
 with st.sidebar:
-    st.image("https://cdn-icons-png.flaticon.com/512/628/628283.png", width=100)
-    st.title("Menu SIMPHONY")
-    choice = st.radio("Pilih Halaman:", ["🏠 Beranda", "💬 Teman Cerita", "📚 Sudut Tenang", "🆘 Pusat Bantuan"])
+    st.markdown("## 🌱 SIMPHONY")
+    st.write("Harmony in Growth")
+    st.write("---")
+    # Variabel 'choice' didefinisikan di sini
+    choice = st.radio("Pilih Menu:", ["🏠 Beranda", "💬 Teman Cerita", "📚 Sudut Tenang", "🆘 Pusat Bantuan"])
 
 # --- 4. LOGIKA HALAMAN ---
-
 if choice == "🏠 Beranda":
-    st.title("🌱 SIMPHONY")
-    st.subheader("Selamat Datang di Ruang Aman Siswa SMAN 1 Sukatani")
+    st.markdown("<h1 style='text-align: center;'>Selamat Datang di SIMPHONY</h1>", unsafe_allow_html=True)
     st.write("---")
-    st.image("https://images.unsplash.com/photo-1516062423079-7ca13cdc7f5a?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80")
-    st.info("Aplikasi ini adalah wadah anonim untuk berbagi cerita dan mencari dukungan mental tanpa rasa takut.")
+    
+    col1, col2, col3 = st.columns([1, 3, 1])
+    with col2:
+        # Ilustrasi yang lebih bersahabat
+        st.image("https://img.freepik.com/free-vector/hand-drawn-mental-health-awareness-concept_23-2148531012.jpg")
+    
+    st.markdown("""
+    ### Hai, Siswa SMAN 1 Sukatani! 
+    Punya sesuatu yang mengganjal di pikiran? Masalah pertemanan, keluarga, atau merasa tidak nyaman karena *bullying*? 
+    
+    **SIMPHONY** adalah ruang amanmu. Di sini kamu bisa:
+    1. **Bercerita secara Anonim** (Identitasmu rahasia).
+    2. **Mendapatkan Ketenangan** melalui konten positif.
+    3. **Mencari Bantuan** tanpa merasa dihakimi.
+    """)
 
 elif choice == "💬 Teman Cerita":
-    st.header("💬 Teman Cerita (Anonim)")
-    st.write("Apapun yang kamu tulis di sini akan terjaga kerahasiaannya.")
+    st.header("💬 Teman Cerita")
+    st.write("Tuangkan perasaanmu di sini. Kami mendengarkan.")
     
-    kat = st.selectbox("Pilih Kategori:", ["Keluarga", "Pertemanan (Circle)", "Bullying", "Masalah Pribadi"])
-    cerita = st.text_area("Apa yang ingin kamu sampaikan hari ini?", height=200)
+    kat = st.selectbox("Kategori Masalah:", ["Keluarga", "Circle Pertemanan", "Bullying", "Internal/Pribadi"])
+    cerita = st.text_area("Apa yang ingin kamu ceritakan?", height=150)
     
-    if st.button("Kirim Cerita"):
+    if st.button("Kirim Cerita secara Anonim"):
         if cerita:
-            with st.spinner('Menghubungkan ke sistem...'):
-                hasil = kirim_ke_jembatan(kat, cerita)
-                if hasil:
-                    st.success("✅ Cerita berhasil dikirim secara aman. Kamu tidak sendirian!")
+            with st.spinner('Mengirim cerita...'):
+                berhasil = kirim_ke_jembatan(kat, cerita)
+                if berhasil:
+                    st.success("Terima kasih sudah berbagi. Ceritamu sudah kami terima dengan aman.")
                 else:
-                    st.error("❌ Gagal mengirim. Pastikan URL Pipedream sudah benar.")
+                    st.error("Maaf, terjadi gangguan koneksi. Coba lagi nanti ya.")
         else:
-            st.warning("Tulis ceritamu dulu ya...")
+            st.warning("Ceritanya diisi dulu ya...")
 
 elif choice == "📚 Sudut Tenang":
     st.header("📚 Sudut Tenang")
-    st.write("Kumpulan motivasi untukmu:")
-    st.video("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+    st.info("Ambil nafas dalam-dalam... Kamu hebat sudah bertahan sampai hari ini.")
+    st.write("Berikut video relaksasi untukmu:")
+    st.video("https://www.youtube.com/watch?v=mUNv_E7E9fM")
 
 elif choice == "🆘 Pusat Bantuan":
     st.header("🆘 Pusat Bantuan")
-    st.write("Butuh teman bicara langsung? Konselor kami siap membantu.")
-    st.success("Ibu Guru BK: 0812-xxxx-xxxx")
+    st.write("Jika kamu merasa butuh bantuan segera, jangan ragu hubungi:")
+    st.error("Guru BK SMAN 1 Sukatani: (Hubungi Ruang BK)")
+    st.warning("Layanan Konseling Sebaya: (Segera Hadir)")
