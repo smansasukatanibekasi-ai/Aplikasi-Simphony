@@ -1,6 +1,32 @@
 import streamlit as st
-import gspread
+from streamlit_gsheets import GSheetsConnection
+import pandas as pd
 from datetime import datetime
+
+# --- KONEKSI DATABASE ---
+conn = st.connection("gsheets", type=GSheetsConnection)
+
+def simpan_ke_sheet(kategori, pesan):
+    try:
+        # Ambil data yang sudah ada
+        existing_data = conn.read(ttl=0)
+        
+        # Buat data baru
+        waktu = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+        new_row = pd.DataFrame([{"Tanggal": waktu, "Kategori": kategori, "Curhatan": pesan}])
+        
+        # Gabungkan data lama dan baru
+        updated_df = pd.concat([existing_data, new_row], ignore_index=True)
+        
+        # Update kembali ke Google Sheets
+        conn.update(data=updated_df)
+        return True
+    except Exception as e:
+        st.error(f"Gagal menyimpan: {e}")
+        return False
+
+# --- LOGIKA MENU TETAP SAMA ---
+# (Gunakan menu Sidebar yang Anda inginkan sebelumnya)
 
 # --- PENGATURAN HALAMAN & BACKGROUND ---
 st.set_page_config(page_title="SIMPHONY - SMAN 1 Sukatani", page_icon="🌱")
