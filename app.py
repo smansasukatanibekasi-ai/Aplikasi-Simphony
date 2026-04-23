@@ -1,28 +1,25 @@
 import streamlit as st
-from streamlit_gsheets import GSheetsConnection
-import pandas as pd
-from datetime import datetime
-
-# --- KONEKSI DATABASE ---
-conn = st.connection("gsheets", type=GSheetsConnection)
+import requests # Tambahkan ini di bagian paling atas kode
 
 def simpan_ke_sheet(kategori, pesan):
     try:
-        # Ambil data yang sudah ada
-        existing_data = conn.read(ttl=0)
+        # GANTI URL DI BAWAH INI DENGAN URL DARI PIPEDREAM ANDA
+        url_pipedream = "https://eo5q5f9bo6e6ll1.m.pipedream.net" 
         
-        # Buat data baru
-        waktu = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-        new_row = pd.DataFrame([{"Tanggal": waktu, "Kategori": kategori, "Curhatan": pesan}])
+        data_curhat = {
+            "kategori": kategori,
+            "pesan": pesan
+        }
         
-        # Gabungkan data lama dan baru
-        updated_df = pd.concat([existing_data, new_row], ignore_index=True)
+        # Mengirim data ke jembatan Pipedream
+        response = requests.post(url_pipedream, json=data_curhat)
         
-        # Update kembali ke Google Sheets
-        conn.update(data=updated_df)
-        return True
+        if response.status_code == 200:
+            return True
+        else:
+            return False
     except Exception as e:
-        st.error(f"Gagal menyimpan: {e}")
+        st.error(f"Terjadi kesalahan teknis: {e}")
         return False
 
 # --- LOGIKA MENU TETAP SAMA ---
