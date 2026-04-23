@@ -3,32 +3,72 @@ import requests
 from datetime import datetime
 import pandas as pd
 
-# --- 1. PENGATURAN HALAMAN & BACKGROUND ---
-st.set_page_config(page_title="SIMPHONY - SMAN 1 Sukatani", page_icon="🌱", layout="wide")
+# --- PENGATURAN UI ---
+st.set_page_config(page_title="SIMPHONY", page_icon="🌱", layout="centered")
 
 st.markdown("""
     <style>
+    /* 1. Background Utama */
     .stApp {
-        background-image: url("https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80");
+        background-image: url("https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?q=80&w=1920&auto=format&fit=crop");
         background-attachment: fixed;
         background-size: cover;
     }
+
+    /* 2. Wadah Utama (Membuat Tulisan Terbaca Jelas) */
     .main .block-container {
-        background-color: rgba(255, 255, 255, 0.9);
-        padding: 2rem 3rem;
-        border-radius: 20px;
-        margin-top: 2rem;
+        background-color: rgba(255, 255, 255, 0.85); /* Putih dengan transparansi 85% */
+        padding: 3rem;
+        border-radius: 25px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        margin-top: 30px;
+        margin-bottom: 30px;
+        color: #2c3e50; /* Warna teks gelap agar kontras */
     }
-    /* Warna font tombol utama agar cerah */
+
+    /* 3. Percantik Judul */
+    h1, h2, h3 {
+        color: #1a5276 !important;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    /* 4. Percantik Tombol */
     .stButton>button {
-        background-color: #01579b;
+        background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
         color: white !important;
-        font-weight: bold;
+        border: none;
+        padding: 10px 24px;
         border-radius: 12px;
-        width: 100%;
+        font-weight: bold;
+        transition: 0.3s;
+    }
+    .stButton>button:hover {
+        transform: scale(1.02);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     }
     </style>
     """, unsafe_allow_html=True)
+
+# --- LOGIKA HALAMAN BERANDA ---
+if choice == "🏠 Beranda":
+    st.markdown("<h1 style='text-align: center;'>🌱 SIMPHONY</h1>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; font-style: italic;'>Your Safe Space to Grow and Glow</p>", unsafe_allow_html=True)
+    st.write("---")
+    
+    # Gunakan Ilustrasi yang lebih menenangkan
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        st.image("https://img.freepik.com/free-vector/listening-concept-illustration_114360-5942.jpg", 
+                 caption="Kami di sini untuk mendengarkanmu tanpa menghakimi.")
+    
+    st.write("""
+    ### Kenapa SIMPHONY ada untukmu?
+    Terkadang, beban di sekolah, rumah, atau lingkaran pertemanan terasa berat. **SIMPHONY** hadir sebagai teman setiamu di SMAN 1 Sukatani untuk:
+    * **Menampung ceritamu secara anonim.**
+    * **Memberikan ruang tenang saat pikiran sedang kacau.**
+    * **Menghubungkanmu dengan bantuan profesional jika dibutuhkan.**
+    """)
+    st.info("Klik menu di samping kiri untuk mulai bercerita.")
 
 # --- 2. FUNGSI KIRIM DATA (VIA PIPEDREAM) ---
 def kirim_ke_jembatan(kategori, pesan):
