@@ -46,21 +46,33 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# --- FUNGSI SIMPAN KE GOOGLE SHEETS ---
+# --- KONEKSI DATABASE (VERSI BARU & GRATIS) ---
+# Menghubungkan ke Google Sheets melalui fitur "Secrets" Streamlit
+conn = st.connection("gsheets", type=GSheetsConnection)
+
 def simpan_ke_sheet(kategori, pesan):
     try:
-        # GANTI LINK DI BAWAH INI DENGAN LINK GOOGLE SHEETS ANDA
-        url_sheet = "https://docs.google.com/spreadsheets/d/1NYFtgwE8Tafq73EQLy_T1wVEgvCD8OSOzFlJ6JNQbtQ/edit?usp=sharing"
+        # 1. Baca data yang sudah ada di Sheets
+        # ttl=0 artinya kita selalu mengambil data terbaru
+        existing_data = conn.read(ttl=0)
         
-        # Proses koneksi sederhana (Gunakan akses publik 'Anyone can edit')
-        gc = gspread.public_spreadsheet(url_sheet)
-        sheet = gc.get_worksheet(0) # Ambil tab pertama
+        # 2. Siapkan baris baru
+        waktu = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+        new_row = pd.DataFrame([{
+            "Tanggal": waktu, 
+            "Kategori": kategori, 
+            "Curhatan": pesan
+        }])
         
-        # Ambil waktu sekarang
-        waktu = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        
-        # Tambahkan baris baru
-        sheet.append_row([waktu, kategori, pesan])
+        # 3. Gabungkan data lama dengan data baru
+        # Jika sheet kosong, kita pakai data baru saja
+        if existing_data is not None and not existing_data.empty:
+            updated_df = pd.concat([existing_data, new_row], ignore_index=True)
+        else:
+            updated_df = new_row
+            
+        # 4. Simpan kembali semuanya ke Google Sheets
+        conn.update(data=updated_df)
         return True
     except Exception as e:
         st.error(f"Gagal menyimpan: {e}")
