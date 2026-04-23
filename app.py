@@ -63,7 +63,7 @@ with st.sidebar:
     st.write("Harmony in Growth")
     st.write("---")
     # Variabel 'choice' didefinisikan di sini
-    choice = st.radio("Pilih Menu:", ["🏠 Beranda", "💬 Teman Cerita", "📚 Sudut Tenang", "🆘 Pusat Bantuan"])
+    choice = st.radio("Pilih Menu:", ["🏠 Beranda", "💬 Teman Cerita", "📚 Sudut Tenang", "🆘 Pusat Bantuan", "ℹ️ Informasi Riset"])
 
 # --- 4. LOGIKA HALAMAN ---
 if choice == "🏠 Beranda":
@@ -114,3 +114,32 @@ elif choice == "🆘 Pusat Bantuan":
     st.write("Jika kamu merasa butuh bantuan segera, jangan ragu hubungi:")
     st.error("Guru BK SMAN 1 Sukatani: (Hubungi Ruang BK)")
     st.warning("Layanan Konseling Sebaya: (Segera Hadir)")
+elif choice == "ℹ️ Informasi Riset":
+    st.header("ℹ️ Informasi Pengembangan & Riset")
+    st.write("Aplikasi ini dikembangkan berdasarkan penelitian ilmiah untuk menciptakan lingkungan sekolah yang lebih harmonis.")
+    
+    # Wadah Informasi Penelitian
+    st.info("### Judul Penelitian")
+    st.markdown("""
+    **"The Patterns of Interaction that Occur in the Learning Environment: Case Study of SMA Negeri 1 Sukatani"**
+    """)
+    
+    # Tim Peneliti dalam kolom agar rapi
+    col1, col2 = st.columns(2)
+    with col1:
+        st.write("### 📝 Tim Peneliti")
+        st.markdown("""
+        * **Anindya Kharisma Putri**
+        * **Anggun Zulfa Qurrotul Aini**
+        * **Denisa**
+        """)
+    
+    with col2:
+        st.write("### 👩‍🏫 Pembimbing")
+        st.write("**Putri Komalasari, S.Pd**")
+
+    st.write("---")
+    
+    # Informasi Pengembang
+    st.write("### 💻 Pengembang Aplikasi")
+    st.success("**Irvan Daviana, S.Pd**")
