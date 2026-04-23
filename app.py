@@ -26,7 +26,7 @@ st.markdown("""
 
     /* Memperjelas teks */
     h1, h2, h3, p, span, label {
-        color: #2c3e50 !important;
+        color: #027d25 !important;
     }
 
     /* Tombol Cantik */
