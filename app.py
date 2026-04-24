@@ -17,10 +17,10 @@ st.markdown("""
 
     /* Wadah Konten (Glassmorphism agar tulisan terbaca) */
     .main .block-container {
-        background-color: rgba(51, 204, 51); 
+        background-color: rgb(0, 102, 102); 
         padding: 3rem;
         border-radius: 20px;
-        box-shadow: 0 8px 32px 0 rgb(102, 255, 153);
+        box-shadow: 0 8px 32px 0 rgb(51, 153, 102);
         margin-top: 50px;
     }
 
@@ -32,7 +32,7 @@ st.markdown("""
     /* Tombol Cantik */
     .stButton>button {
         background: linear-gradient(45deg, #2ecc71, #27ae60);
-        color: white !important;
+        color: grey !important;
         border: none;
         border-radius: 10px;
         padding: 0.5rem 1rem;
