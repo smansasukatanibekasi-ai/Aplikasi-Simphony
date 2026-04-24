@@ -20,7 +20,7 @@ st.markdown("""
         background-color: rgb(255, 255, 255); 
         padding: 3rem;
         border-radius: 20px;
-        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+        box-shadow: 0 8px 32px 0 rgb(102, 255, 153);
         margin-top: 50px;
     }
 
