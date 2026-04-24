@@ -17,7 +17,7 @@ st.markdown("""
 
     /* Wadah Konten (Glassmorphism agar tulisan terbaca) */
     .main .block-container {
-        background-color: rgb(255, 255, 255); 
+        background-color: rgb(51, 204, 51); 
         padding: 3rem;
         border-radius: 20px;
         box-shadow: 0 8px 32px 0 rgb(102, 255, 153);
