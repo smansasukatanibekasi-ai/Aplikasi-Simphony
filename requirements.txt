@@ -1,2 +1,4 @@
 requests
 pandas
+st-gsheets-connection
+google-generativeai
