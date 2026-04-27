@@ -30,43 +30,40 @@ st.markdown("""
 # --- 3. LOGIKA CORE ---
 def login_user(u, p):
     try:
-        # Gunakan koneksi gsheets
+        # Inisialisasi koneksi
         conn = st.connection("gsheets", type=GSheetsConnection)
         
-        # Baca data tanpa filter di awal untuk memastikan koneksi aman
+        # Ambil SEMUA data dari spreadsheet (tanpa menyebut worksheet dulu untuk tes)
+        # Jika cara ini berhasil, berarti koneksi URL-nya benar.
+        full_df = conn.read(ttl="1m")
+        
+        # Jika Anda ingin spesifik ke tab Users, gunakan cara ini yang lebih aman:
+        # Kadang error 400 hilang jika kita memanggil URL lengkap dengan gid
         df = conn.read(worksheet="Users", ttl="1m")
         
-        # Bersihkan spasi di nama kolom jika ada
-        df.columns = df.columns.str.strip()
+        # Bersihkan nama kolom dari spasi atau karakter aneh
+        df.columns = [str(c).strip() for c in df.columns]
         
-        # Validasi apakah kolom Username dan Password ada
-        if 'Username' in df.columns and 'Password' in df.columns:
-            # Bandingkan data (ubah semua ke string agar tidak error tipe data)
-            match = df[(df['Username'].astype(str).str.strip() == str(u).strip()) & 
-                       (df['Password'].astype(str).str.strip() == str(p).strip())]
-            return not match.empty
-        else:
-            st.error("Kolom 'Username' atau 'Password' tidak ditemukan di GSheet.")
+        # Cek apakah kolom yang dibutuhkan ada
+        if 'Username' not in df.columns or 'Password' not in df.columns:
+            st.error(f"Kolom tidak ditemukan. Kolom yang ada: {list(df.columns)}")
             return False
             
-    except Exception as e:
-        # Jika error 400 terjadi, tampilkan pesan yang lebih membantu
-        if "400" in str(e):
-            st.error("Error 400: Pastikan URL Spreadsheet benar dan tab bernama 'Users' sudah ada.")
-        else:
-            st.error(f"Koneksi GSheet Error: {e}")
-        return False
+        # Pencocokan data
+        # Kita paksa semua menjadi string untuk menghindari konflik tipe data
+        u_str = str(u).strip()
+        p_str = str(p).strip()
+        
+        match = df[(df['Username'].astype(str).str.strip() == u_str) & 
+                   (df['Password'].astype(str).str.strip() == p_str)]
+        
+        return not match.empty
 
-def kirim_pipedream(user, kat, isi):
-    url = st.secrets["https://eo5q5f9bo6e6ll1.m.pipedream.net"]
-    payload = {
-        "tanggal": datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
-        "username": user, "kategori": kat, "pesan": isi
-    }
-    try:
-        res = requests.post(url, json=payload)
-        return res.status_code == 200
-    except: return False
+    except Exception as e:
+        # Jika masih error, tampilkan detail yang sangat spesifik
+        st.error(f"⚠️ Masalah Teknis: {e}")
+        st.info("Saran: Coba cek apakah URL di Secrets sudah benar dan Share Link sudah aktif.")
+        return False
 
 # --- 4. SESSION STATE ---
 if 'logged_in' not in st.session_state:
