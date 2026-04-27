@@ -30,12 +30,31 @@ st.markdown("""
 # --- 3. LOGIKA CORE ---
 def login_user(u, p):
     try:
+        # Gunakan koneksi gsheets
         conn = st.connection("gsheets", type=GSheetsConnection)
+        
+        # Baca data tanpa filter di awal untuk memastikan koneksi aman
         df = conn.read(worksheet="Users", ttl="1m")
-        match = df[(df['Username'].astype(str) == str(u)) & (df['Password'].astype(str) == str(p))]
-        return not match.empty
+        
+        # Bersihkan spasi di nama kolom jika ada
+        df.columns = df.columns.str.strip()
+        
+        # Validasi apakah kolom Username dan Password ada
+        if 'Username' in df.columns and 'Password' in df.columns:
+            # Bandingkan data (ubah semua ke string agar tidak error tipe data)
+            match = df[(df['Username'].astype(str).str.strip() == str(u).strip()) & 
+                       (df['Password'].astype(str).str.strip() == str(p).strip())]
+            return not match.empty
+        else:
+            st.error("Kolom 'Username' atau 'Password' tidak ditemukan di GSheet.")
+            return False
+            
     except Exception as e:
-        st.error(f"Koneksi GSheet Error: {e}")
+        # Jika error 400 terjadi, tampilkan pesan yang lebih membantu
+        if "400" in str(e):
+            st.error("Error 400: Pastikan URL Spreadsheet benar dan tab bernama 'Users' sudah ada.")
+        else:
+            st.error(f"Koneksi GSheet Error: {e}")
         return False
 
 def kirim_pipedream(user, kat, isi):
