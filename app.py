@@ -5,40 +5,14 @@ import google.generativeai as genai
 from datetime import datetime
 from streamlit_gsheets import GSheetsConnection
 
-# --- 1. KONFIGURASI AI & KONEKSI ---
-try:
-    genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
-    ai_model = genai.GenerativeModel('gemini-1.5-flash')
-except:
-    st.warning("Konfigurasi AI sedang disiapkan...")
-
-# --- 2. FUNGSI INTI (PIPEDREAM & AI) ---
-def kirim_ke_pipedream(username, kategori, pesan):
-    """Mengirim data ke Google Sheets melalui Pipedream"""
-    try:
-        url = st.secrets["https://eo5q5f9bo6e6ll1.m.pipedream.net"]
-        payload = {
-            "tanggal": datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
-            "username": username,
-            "kategori": kategori,
-            "pesan": pesan
-        }
-        response = requests.post(url, json=payload)
-        return response.status_code == 200
-    except:
-        return False
-
-def dapatkan_saran_ai(pesan_siswa):
-    """Jawaban otomatis dari Gemini AI"""
-    prompt = f"Berikan tanggapan empati singkat untuk siswa yang sedang merasa: '{pesan_siswa}' (Maks 3 kalimat)."
-    try:
-        return ai_model.generate_content(prompt).text
-    except:
-        return "Terima kasih sudah berbagi cerita. Kamu sangat berani!"
-
-# --- 3. UI STYLING ---
+# --- 1. SETTINGS & AI ---
 st.set_page_config(page_title="SIMPHONY - SMAN 1 Sukatani", page_icon="🌱")
 
+if "GEMINI_API_KEY" in st.secrets:
+    genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
+    ai_model = genai.GenerativeModel('gemini-1.5-flash')
+
+# --- 2. CSS STYLING ---
 st.markdown("""
     <style>
     .stApp {
@@ -47,95 +21,95 @@ st.markdown("""
     }
     .main .block-container {
         background-color: rgba(255, 255, 255, 0.95);
-        padding: 3rem; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        padding: 3rem; border-radius: 20px;
     }
     h1, h2, h3, p { color: #1a5276 !important; }
     </style>
     """, unsafe_allow_html=True)
 
-# --- 4. LOGIKA LOGIN ---
-def login_user(username, password):
-    """Cek kredensial siswa di Google Sheets tab 'Users'"""
+# --- 3. LOGIKA CORE ---
+def login_user(u, p):
     try:
         conn = st.connection("gsheets", type=GSheetsConnection)
-        # Tambahkan nama worksheet secara eksplisit
-        users_df = conn.read(worksheet="Users", ttl="1m")
-        
-        # Pastikan kolom Username dan Password ada
-        if 'Username' not in users_df.columns or 'Password' not in users_df.columns:
-            st.error("Kolom 'Username' atau 'Password' tidak ditemukan di tab Users.")
-            return False
-            
-        # Proses pencocokan data
-        user_data = users_df[(users_df['Username'].astype(str) == str(username)) & 
-                             (users_df['Password'].astype(str) == str(password))]
-        return not user_data.empty
+        df = conn.read(worksheet="Users", ttl="1m")
+        match = df[(df['Username'].astype(str) == str(u)) & (df['Password'].astype(str) == str(p))]
+        return not match.empty
     except Exception as e:
-        # Menampilkan pesan error asli agar mudah diperbaiki
-        st.error(f"Detail Error: {e}")
+        st.error(f"Koneksi GSheet Error: {e}")
         return False
-    # --- 5. DASHBOARD UTAMA ---
+
+def kirim_pipedream(user, kat, isi):
+    url = st.secrets["https://eo5q5f9bo6e6ll1.m.pipedream.net"]
+    payload = {
+        "tanggal": datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
+        "username": user, "kategori": kat, "pesan": isi
+    }
+    try:
+        res = requests.post(url, json=payload)
+        return res.status_code == 200
+    except: return False
+
+# --- 4. SESSION STATE ---
+if 'logged_in' not in st.session_state:
+    st.session_state['logged_in'] = False
+    st.session_state['user'] = ""
+
+# --- 5. HALAMAN ---
+if not st.session_state['logged_in']:
+    st.title("🌱 Login SIMPHONY")
+    u_input = st.text_input("Username")
+    p_input = st.text_input("Password", type="password")
+    if st.button("Masuk"):
+        if login_user(u_input, p_input):
+            st.session_state['logged_in'] = True
+            st.session_state['user'] = u_input
+            st.rerun()
+        else:
+            st.error("Gagal Login. Cek Username/Password.")
+else:
+    # --- DASHBOARD ---
     with st.sidebar:
         st.title("🌱 SIMPHONY")
-        st.write(f"Halo, **{st.session_state['username']}**")
-        st.divider()
-        menu = st.radio("Menu Navigasi:", ["🏠 Beranda", "💬 Curhat Baru", "📩 Pesan & Balasan", "ℹ️ Info Riset", "🆘 Bantuan"])
+        st.write(f"User: {st.session_state['user']}")
+        menu = st.radio("Menu", ["🏠 Beranda", "💬 Curhat", "📩 Balasan", "ℹ️ Info Riset"])
         if st.button("Logout"):
             st.session_state['logged_in'] = False
             st.rerun()
 
     if menu == "🏠 Beranda":
         st.title("Selamat Datang")
-        st.write("SIMPHONY adalah ruang privatmu untuk bercerita tentang interaksi dan tantangan di sekolah.")
-        st.image("https://img.freepik.com/free-vector/listening-concept-illustration_114360-5942.jpg", width=400)
+        st.write("Ruang privat aman untuk siswa SMAN 1 Sukatani.")
+        st.image("https://img.freepik.com/free-vector/listening-concept-illustration_114360-5942.jpg", width=350)
 
-    elif menu == "💬 Curhat Baru":
-        st.header("💬 Teman Cerita")
-        kat = st.selectbox("Kategori:", ["Keluarga", "Bullying", "Pertemanan", "Pribadi"])
-        isi = st.text_area("Apa yang ingin kamu sampaikan hari ini?")
-        if st.button("Kirim Cerita"):
-            if isi:
-                with st.spinner("Memproses..."):
-                    saran = dapatkan_saran_ai(isi)
-                    if kirim_ke_pipedream(st.session_state['username'], kat, isi):
-                        st.success("Terkirim ke database via Pipedream!")
-                        st.info(f"**Pesan Konselor AI:** {saran}")
-                    else: st.error("Gagal kirim. Cek URL Pipedream.")
-            else: st.warning("Isi dulu ceritanya ya.")
+    elif menu == "💬 Curhat":
+        st.header("💬 Curhat Baru")
+        kat = st.selectbox("Kategori", ["Bullying", "Keluarga", "Teman", "Pribadi"])
+        msg = st.text_area("Ceritakan di sini...")
+        if st.button("Kirim"):
+            if msg:
+                if kirim_pipedream(st.session_state['user'], kat, msg):
+                    st.success("Terkirim ke Guru BK!")
+                    try:
+                        ai_res = ai_model.generate_content(f"Berikan semangat singkat untuk: {msg}").text
+                        st.info(f"Pesan AI: {ai_res}")
+                    except: pass
+                else: st.error("Gagal kirim.")
 
-    elif menu == "📩 Pesan & Balasan":
-        st.header("📩 Kotak Pesanku")
+    elif menu == "📩 Balasan":
+        st.header("📩 Kotak Pesan")
         conn = st.connection("gsheets", type=GSheetsConnection)
         df = conn.read(worksheet="Pesan", ttl="1m")
-        pribadi = df[df['Username'].astype(str) == str(st.session_state['username'])]
-        if pribadi.empty: st.info("Belum ada riwayat curhat.")
+        mine = df[df['Username'].astype(str) == str(st.session_state['user'])]
+        if mine.empty: st.info("Belum ada pesan.")
         else:
-            for i, row in pribadi.iterrows():
-                with st.expander(f"Curhat pada {row['Tanggal']}"):
-                    st.write(f"**Pesan:** {row['Pesan']}")
-                    st.success(f"**Balasan Guru BK:** {row.get('Jawaban_Admin', 'Sedang menunggu antrean balasan.')}")
+            for i, r in mine.iterrows():
+                with st.expander(f"Curhat {r['Tanggal']}"):
+                    st.write(f"**Isi:** {r['Pesan']}")
+                    st.success(f"**Balasan:** {r.get('Jawaban_Admin', 'Menunggu balasan...')}")
 
     elif menu == "ℹ️ Info Riset":
-        st.header("ℹ️ Informasi Pengembangan & Riset")
-        st.markdown("### Judul Penelitian")
-        st.info("**The Patterns of Interaction that Occur in the Learning Environment Case Study of SMA Negeri 1 Sukatani**")
-        
-        col1, col2 = st.columns(2)
-        with col1:
-            st.write("### 📝 Tim Peneliti")
-            st.markdown("- **Anindya Kharisma Putri**\n- **Anggun Zulfa Qurrotul Aini**\n- **Denisa**")
-        with col2:
-            st.write("### 👩‍🏫 Pembimbing")
-            st.markdown("**Putri Komalasari, S.Pd**")
-            
-        st.write("---")
-        st.write("### 💻 Pengembang Aplikasi")
-        st.success("**Irvan Daviana, S.Pd**")
-        st.markdown("""
-        Aplikasi **SIMPHONY** dikembangkan untuk memfasilitasi interaksi sosial yang sehat 
-        di lingkungan SMAN 1 Sukatani, memberikan ruang bagi siswa untuk berbagi tanpa rasa takut.
-        """)
-
-    elif menu == "🆘 Bantuan":
-        st.header("🆘 Pusat Bantuan")
-        st.write("Jika butuh bantuan segera, silakan hubungi Ruang BK SMAN 1 Sukatani.")
+        st.header("ℹ️ Info Riset")
+        st.info("The Patterns of Interaction that Occur in the Learning Environment Case Study of SMA Negeri 1 Sukatani")
+        st.write("**Peneliti:** Anindya K, Anggun Z, Denisa")
+        st.write("**Pembimbing:** Putri Komalasari, S.Pd")
+        st.write("**Dev:** Irvan Daviana, S.Pd")
