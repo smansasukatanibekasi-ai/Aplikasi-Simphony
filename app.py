@@ -54,26 +54,26 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 # --- 4. LOGIKA LOGIN ---
-if 'logged_in' not in st.session_state:
-    st.session_state['logged_in'] = False
-    st.session_state['username'] = ""
-
-if not st.session_state['logged_in']:
-    st.title("🌱 Login SIMPHONY")
-    u = st.text_input("Username (NISN)")
-    p = st.text_input("Password", type="password")
-    if st.button("Masuk"):
-        try:
-            conn = st.connection("gsheets", type=GSheetsConnection)
-            users_df = conn.read(worksheet="Users", ttl="1m")
-            if not users_df[(users_df['Username'].astype(str) == str(u)) & (users_df['Password'].astype(str) == str(p))].empty:
-                st.session_state['logged_in'] = True
-                st.session_state['username'] = u
-                st.rerun()
-            else: st.error("Login Gagal.")
-        except: st.error("Gagal terhubung ke database User.")
-
-else:
+def login_user(username, password):
+    """Cek kredensial siswa di Google Sheets tab 'Users'"""
+    try:
+        conn = st.connection("gsheets", type=GSheetsConnection)
+        # Tambahkan nama worksheet secara eksplisit
+        users_df = conn.read(worksheet="Users", ttl="1m")
+        
+        # Pastikan kolom Username dan Password ada
+        if 'Username' not in users_df.columns or 'Password' not in users_df.columns:
+            st.error("Kolom 'Username' atau 'Password' tidak ditemukan di tab Users.")
+            return False
+            
+        # Proses pencocokan data
+        user_data = users_df[(users_df['Username'].astype(str) == str(username)) & 
+                             (users_df['Password'].astype(str) == str(password))]
+        return not user_data.empty
+    except Exception as e:
+        # Menampilkan pesan error asli agar mudah diperbaiki
+        st.error(f"Detail Error: {e}")
+        return False
     # --- 5. DASHBOARD UTAMA ---
     with st.sidebar:
         st.title("🌱 SIMPHONY")
